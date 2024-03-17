@@ -18,6 +18,7 @@ public class HomePage {
 	private By loginPageContent = By.cssSelector("p._1-pxlW span");
 	private By searchBar = By.name("q");
 	private By searchBtn = By.cssSelector("button[type='submit']");
+	private By gitelen = By.cssSelector("giter']");
 
 	public HomePage(WebDriver driver) {
 		this.driver = driver;
