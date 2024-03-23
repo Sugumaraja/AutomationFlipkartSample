@@ -3,6 +3,7 @@
 <suite name="Flipkart Sample Automation Testing" thread-count="2" parallel="tests" verbose="1">
 	<listeners>
 		<listener class-name="zh.qa.webapp.listners.TestAllureListener"></listener>
+		<listener class-name="zh.qa.webapp.listners.ExtentReportListener"></listener>
 	</listeners>
 
 	<test name="Home Page Test">
