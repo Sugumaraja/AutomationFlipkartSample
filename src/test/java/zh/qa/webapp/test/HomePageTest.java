@@ -10,8 +10,8 @@ import zh.qa.webapp.constants.AppConstants;
 
 @Listeners(AllureTestNg.class)
 @Epic("Home Page of the APP")
-@Story("Developing the Homepage and Login function")
-@Feature("Home page & Login page function")
+@Story("Developing the Homepage and Login functions")
+@Feature("Home page & Login page functions")
 public class HomePageTest extends BaseTest{
 
 @Description("To validate the navigation of the login button")
