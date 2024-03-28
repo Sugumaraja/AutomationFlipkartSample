@@ -16,7 +16,7 @@ import zh.qa.webapp.baseTest.BaseTest;
 public class SearchPageTest extends BaseTest{
 @DataProvider
 public Object[][] searchContent() {
-return new Object[][] {{"watch","digital"},{"belt","women"}};//,{"wallet","leather"},{"cooker","butterfly"}
+return new Object[][] {{"watch","digital"},{"belt","women"}};//,{"wallet","leather"},{"cooker","Leo"}
 }
 //@DataProvider(name="searchContent")
 //@BeforeTest (dataProvider = "searchContent")
