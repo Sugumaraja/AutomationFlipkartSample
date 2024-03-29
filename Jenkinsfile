@@ -1,115 +1,110 @@
-pipeline 
-{
+pipeline {
     agent any
     
-    tools{
+    tools {
         maven 'maven'
-        }
+    }
 
-    stages 
-    {
-        stage('Build') 
-        {
-            steps
-            {
-                 git 'https://github.com/jglick/simple-maven-project-with-tests.git'
-                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    git branch: 'master', url: 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                    bat "mvn -Dmaven.test.failure.ignore=true clean package"
+                }
             }
-            post 
-            {
-                success
-                {
+            post {
+                success {
                     junit '**/target/surefire-reports/TEST-*.xml'
                     archiveArtifacts 'target/*.jar'
                 }
             }
         }
-        
-        
-        
-        stage("Deploy to QA"){
-            steps{
-                echo("deploy to qa")
+
+        stage("Deploy to QA") {
+            steps {
+                echo "Deploy to QA"
             }
         }
-        
-        
-                
+
         stage('Regression Automation Tests') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_regression.xml"
-                    
+                    script {
+                        git branch: 'master', url: 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
+                        bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_regression.xml"
+                    }
                 }
             }
         }
-                
-     
+
         stage('Publish Allure Reports') {
-           steps {
+            steps {
                 script {
                     allure([
                         includeProperties: false,
                         jdk: '',
                         properties: [],
                         reportBuildPolicy: 'ALWAYS',
-                        results: [[path: '/allure-results']]
+                        results: [[path: 'allure-results']]
                     ])
                 }
             }
         }
-        
-        
-        stage('Publish Extent Report'){
-            steps{
-                     publishHTML([allowMissing: false,
-                                  alwaysLinkToLastBuild: false, 
-                                  keepAll: true, 
-                                  reportDir: 'reports', 
-                                  reportFiles: 'TestExecutionReport.html', 
-                                  reportName: 'HTML Regression Extent Report', 
-                                  reportTitles: ''])
-            }
-        }
-        
-        stage("Deploy to Stage"){
-            steps{
-                echo("deploy to Stage")
-            }
-        }
-        
-        stage('Sanity Automation Test') {
+
+        stage('Publish Extent Report') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_sanity.xml"
-                    
+                script {
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'reports',
+                        reportFiles: 'TestExecutionReport.html',
+                        reportName: 'HTML Regression Extent Report',
+                        reportTitles: ''
+                    ])
                 }
             }
         }
-        
-        
-        
-        stage('Publish sanity Extent Report'){
-            steps{
-                     publishHTML([allowMissing: false,
-                                  alwaysLinkToLastBuild: false, 
-                                  keepAll: true, 
-                                  reportDir: 'reports', 
-                                  reportFiles: 'TestExecutionReport.html', 
-                                  reportName: 'HTML Sanity Extent Report', 
-                                  reportTitles: ''])
+
+        stage("Deploy to Stage") {
+            steps {
+                echo "Deploy to Stage"
             }
         }
-        
-        
-        stage("Deploy to PROD"){
-            steps{
-                echo("deploy to PROD")
+
+        stage('Sanity Automation Test') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    script {
+                        git branch: 'master', url: 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
+                        bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_sanity.xml"
+                    }
+                }
             }
         }
-        
-        
+
+        stage('Publish Sanity Extent Report') {
+            steps {
+                script {
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'reports',
+                        reportFiles: 'TestExecutionReport.html',
+                        reportName: 'HTML Sanity Extent Report',
+                        reportTitles: ''
+                    ])
+                }
+            }
+        }
+
+        stage("Deploy to PROD") {
+            steps {
+                echo "Deploy to PROD"
+            }
+        }
     }
 }
