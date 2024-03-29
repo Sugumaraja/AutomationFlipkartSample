@@ -38,8 +38,8 @@ pipeline
         stage('Regression Automation Tests') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git 'https://github.com/Sugumaraja/AutomationFlipkartSample'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_regression.xml"
+                    git 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
+                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml"
                     
                 }
             }
@@ -82,14 +82,13 @@ pipeline
         stage('Sanity Automation Test') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git 'https://github.com/Sugumaraja/AutomationFlipkartSample'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_sanity.xml"
+                    git 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
+                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml"
                     
                 }
             }
         }
-        
-        
+              
         
         stage('Publish sanity Extent Report'){
             steps{
