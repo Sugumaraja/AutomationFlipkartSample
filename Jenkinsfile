@@ -8,11 +8,23 @@ pipeline
 
     stages 
     {
-      stage("Build"){
-            steps{
-                echo("Build success")
+        stage('Build') 
+        {
+            steps
+            {
+                 git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
-        }   
+            post 
+            {
+                success
+                {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+        
         
         
         stage("Deploy to QA"){
@@ -27,7 +39,7 @@ pipeline
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     git 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml"
+                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_regression.xml"
                     
                 }
             }
@@ -71,12 +83,13 @@ pipeline
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     git 'https://github.com/Sugumaraja/AutomationFlipkartSample.git'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml"
+                    sh "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/Testrunners/testng_sanity.xml"
                     
                 }
             }
         }
-                
+        
+        
         
         stage('Publish sanity Extent Report'){
             steps{
